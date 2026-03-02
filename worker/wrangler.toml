@@ -12,6 +12,7 @@ SMTP_HOST = "server392.web-hosting.com"
 SMTP_PORT = "587"
 SMTP_USER = "hello@purplesquirrelmedia.io"
 SMTP_FROM_NAME = "Luna — Tuluminati Real Estate"
+FOLLOW_UP_TEST_MODE = "true"
 
 [[kv_namespaces]]
 binding = "LEADS"
@@ -21,7 +22,10 @@ id = "8a57d54d329944b68dd7b56a09cbc0fb"
 binding = "PROPERTIES"
 id = "b0513f1eb2684bddaf1509fda22a0abe"
 
+[triggers]
+crons = ["*/5 * * * *"]
+
 # Secrets (set via wrangler secret put):
 # SMTP_PASS - cPanel email password
-# VAPI_PRIVATE_KEY - for outbound calls (when ready)
-# VAPI_PHONE_NUMBER_ID - for outbound calls (when ready)
+# VAPI_PRIVATE_KEY - for outbound calls
+# VAPI_PHONE_NUMBER_ID - for outbound calls
