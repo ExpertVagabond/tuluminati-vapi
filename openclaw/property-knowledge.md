@@ -82,6 +82,14 @@
 - **Cozumel:** Island diving destination, limited inventory = high value retention
 - **Sian Ka'an:** UNESCO biosphere, ultra-exclusive, limited development permitted
 
+## Listing Services — NOW ACCEPTING
+- **For Sale listings:** We accept property listings from owners and developers across the Riviera Maya
+- **Rental listings:** Vacation rental and long-term rental property management and listing
+- **How it works:** Property owners submit their listing → Luna evaluates and presents to qualified buyers/renters
+- **Coverage:** Tulum, Playa del Carmen, Puerto Morelos, Cancun, Cozumel, Sian Ka'an
+- **Contact:** tuluminatirealestate.com for listing submissions
+- **Commission:** Competitive rates, full marketing support, multilingual (EN/ES) reach
+
 ## Why Riviera Maya
 - #1 international tourist destination in Latin America
 - Year-round tropical climate (avg 28°C / 82°F)

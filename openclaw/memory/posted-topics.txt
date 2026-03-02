@@ -2,3 +2,7 @@
 # Format: DATE | POST_TYPE | PROPERTY_NAME | POST_ID
 # Check before creating new content to avoid repetition
 2026-03-02 | intro | — | 69895a6f-8494-4ea9-971a-edcf9c5c4519
+2026-03-02 | market_insight | passive_income_riviera_maya | 46be6d6c-ed74-4059-a8d6-e58beeb73ba4
+2026-03-02 | property_spotlight | LUMARA (failed verification) | 0675a90a-0e58-4515-91b8-9013adb9420c
+2026-03-02 | listing_announcement | accepting_listings (failed verification) | 580699e8-4449-47b6-b54a-e9fa2144572c
+2026-03-02 | listing_announcement | accepting_listings (verified) | f8cc2278-79bf-4d82-8753-a0b481d8984e
