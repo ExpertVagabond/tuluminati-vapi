@@ -6,3 +6,4 @@
 2026-03-02 | property_spotlight | LUMARA (failed verification) | 0675a90a-0e58-4515-91b8-9013adb9420c
 2026-03-02 | listing_announcement | accepting_listings (failed verification) | 580699e8-4449-47b6-b54a-e9fa2144572c
 2026-03-02 | listing_announcement | accepting_listings (verified) | f8cc2278-79bf-4d82-8753-a0b481d8984e
+2026-03-02 | token_launch | $LUNA + Tulum Node pop-up city (verified, m/general) | (check post ID)
