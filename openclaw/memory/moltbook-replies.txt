@@ -1,0 +1,3 @@
+# Moltbook Reply Log — tuluminati_realestate
+# Format: DATE | POST_ID | REPLY_SUMMARY
+# Check before replying to avoid duplicate engagement

@@ -1,0 +1,4 @@
+# Moltbook Posted Topics — tuluminati_realestate
+# Format: DATE | POST_TYPE | PROPERTY_NAME | POST_ID
+# Check before creating new content to avoid repetition
+2026-03-02 | intro | — | 69895a6f-8494-4ea9-971a-edcf9c5c4519

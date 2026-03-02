@@ -53,6 +53,25 @@
             --radius-pill: 100px;
         }
 
+        .luna-avatar-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .luna-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-gold);
+            box-shadow: 0 0 40px var(--accent-gold-glow), 0 0 80px var(--accent-teal-glow);
+            object-fit: cover;
+            animation: avatarPulse 4s ease-in-out infinite;
+        }
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 40px var(--accent-gold-glow), 0 0 80px var(--accent-teal-glow); }
+            50% { box-shadow: 0 0 60px var(--accent-gold-glow), 0 0 120px var(--accent-teal-glow); }
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
@@ -1193,6 +1212,9 @@
                 <div class="hero-tag">
                     <div class="pulse-dot"></div>
                     AI Voice Concierge
+                </div>
+                <div class="luna-avatar-wrap">
+                    <img src="luna-avatar.png" alt="Luna AI Concierge" class="luna-avatar" width="120" height="120">
                 </div>
                 <h1>Meet <em>Luna</em> — Your Riviera Maya Real Estate Guide</h1>
                 <p class="hero-sub">24/7 bilingual voice assistant for luxury properties in Tulum, Playa del Carmen & the Riviera Maya. Ask about properties, investment returns, or schedule a tour.</p>
