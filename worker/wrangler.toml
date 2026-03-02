@@ -1,18 +1,27 @@
 name = "tuluminati-webhook"
 main = "index.js"
 compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 TULUMINATI_PHONE = "+529983702679"
 NOTIFICATION_EMAIL = "info@tuluminatirealestate.com"
 NTFY_TOPIC = "tuluminati-leads-9k3x"
 DASHBOARD_PASSWORD = "luna2026"
+SMTP_HOST = "server392.web-hosting.com"
+SMTP_PORT = "587"
+SMTP_USER = "hello@purplesquirrelmedia.io"
+SMTP_FROM_NAME = "Luna — Tuluminati Real Estate"
 
 [[kv_namespaces]]
 binding = "LEADS"
 id = "8a57d54d329944b68dd7b56a09cbc0fb"
 
-# Optional: Uncomment after creating a Twilio account for WhatsApp:
-# TWILIO_ACCOUNT_SID = ""
-# TWILIO_AUTH_TOKEN = ""
-# TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"
+[[kv_namespaces]]
+binding = "PROPERTIES"
+id = "b0513f1eb2684bddaf1509fda22a0abe"
+
+# Secrets (set via wrangler secret put):
+# SMTP_PASS - cPanel email password
+# VAPI_PRIVATE_KEY - for outbound calls (when ready)
+# VAPI_PHONE_NUMBER_ID - for outbound calls (when ready)
