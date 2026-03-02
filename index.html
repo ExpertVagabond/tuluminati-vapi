@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna AI Concierge | Tuluminati Real Estate</title>
+    <meta name="description" content="Meet Luna — your 24/7 AI real estate concierge for luxury properties in Tulum, Playa del Carmen & the Riviera Maya. Talk to Luna now.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tuluminati-vapi.pages.dev/">
+    <meta property="og:title" content="Luna AI Concierge | Tuluminati Real Estate">
+    <meta property="og:description" content="24/7 bilingual voice assistant for luxury Riviera Maya properties. Buy, rent, or invest — Luna can help.">
+    <meta property="og:image" content="https://tuluminati-vapi.pages.dev/og-image.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Luna AI Concierge | Tuluminati Real Estate">
+    <meta name="twitter:description" content="24/7 bilingual voice assistant for luxury Riviera Maya properties.">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23c9a962'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' fill='%230a0a0a' font-family='serif'%3ET%3C/text%3E%3C/svg%3E">
+    <link rel="canonical" href="https://tuluminati-vapi.pages.dev/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0908;
+            --bg-elevated: #13120e;
+            --bg-card: #1a1814;
+            --bg-card-hover: #221f1a;
+            --text-primary: #f5f0e8;
+            --text-secondary: #b5a88a;
+            --text-muted: #7a7060;
+            --accent-gold: #c9a962;
+            --accent-gold-bright: #dfc07a;
+            --accent-gold-dim: rgba(201, 169, 98, 0.12);
+            --accent-gold-glow: rgba(201, 169, 98, 0.25);
+            --accent-teal: #2dd4bf;
+            --accent-teal-dim: rgba(45, 212, 191, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-card: rgba(201, 169, 98, 0.08);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --radius-pill: 100px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.65;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Noise texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Gradient mesh */
+        .gradient-bg {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 10%, rgba(201, 169, 98, 0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 85% 80%, rgba(201, 169, 98, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(45, 212, 191, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+        }
+
+        /* ==================== NAVIGATION ==================== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 0;
+            background: rgba(10, 9, 8, 0.75);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--accent-gold);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--accent-gold); }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-gold);
+            color: #0a0908 !important;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-gold-bright);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--accent-gold-glow);
+        }
+
+        /* ==================== HERO ==================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 0 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-gold-dim);
+            border: 1px solid rgba(201, 169, 98, 0.15);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease-out both;
+        }
+
+        .hero-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.8s ease-out 0.1s both;
+        }
+
+        .hero h1 em {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            animation: fadeUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeUp 0.8s ease-out 0.3s both;
+        }
+
+        /* Hero glow */
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--accent-gold-glow) 0%, transparent 70%);
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: glowPulse 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-gold);
+            color: #0a0908;
+            padding: 0.95rem 2.25rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 24px rgba(201, 169, 98, 0.3);
+            font-family: inherit;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-gold-bright);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(201, 169, 98, 0.4);
+        }
+
+        .btn-primary svg { transition: transform 0.3s; }
+        .btn-primary:hover svg { transform: translateX(3px); }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 0.95rem 2.25rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: var(--accent-gold-dim);
+        }
+
+        /* ==================== STATS BAR ==================== */
+        .stats-bar {
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 2.5rem 0;
+            background: rgba(19, 18, 14, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item { position: relative; }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -1rem;
+            top: 15%;
+            height: 70%;
+            width: 1px;
+            background: var(--border-subtle);
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 400;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .stat-number span { color: var(--accent-gold); font-size: 0.7em; }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.25rem;
+        }
+
+        /* ==================== SECTIONS ==================== */
+        .section {
+            padding: clamp(4rem, 8vw, 7rem) 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            background: var(--accent-gold-dim);
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-pill);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .section-title em {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 1rem auto 0;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* ==================== HOW IT WORKS ==================== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(201, 169, 98, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .step-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: rgba(201, 169, 98, 0.15);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-gold-dim);
+            border-radius: var(--radius-md);
+            color: var(--accent-gold);
+        }
+
+        .step-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ==================== FEATURES ==================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before { transform: scaleX(1); }
+
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(201, 169, 98, 0.12);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-gold-dim);
+            border-radius: var(--radius-sm);
+            color: var(--accent-gold);
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .feature-card .feature-detail {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            margin-top: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* ==================== CTA SECTION ==================== */
+        .cta-section {
+            padding: clamp(4rem, 8vw, 6rem) 0;
+            text-align: center;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.08) 0%, rgba(45, 212, 191, 0.04) 100%);
+            border: 1px solid rgba(201, 169, 98, 0.12);
+            border-radius: var(--radius-lg);
+            padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 4rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-gold-glow) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            pointer-events: none;
+        }
+
+        .cta-box h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .cta-box h2 em {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .cta-box p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .cta-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Voice wave animation */
+        .voice-waves {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 24px;
+            margin-bottom: 1.5rem;
+        }
+
+        .voice-waves .bar {
+            width: 3px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+            animation: waveBar 1.2s ease-in-out infinite;
+        }
+
+        .voice-waves .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .voice-waves .bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .voice-waves .bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+        .voice-waves .bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+        .voice-waves .bar:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+        .voice-waves .bar:nth-child(6) { height: 20px; animation-delay: 0.15s; }
+        .voice-waves .bar:nth-child(7) { height: 12px; animation-delay: 0.25s; }
+
+        /* ==================== INVESTMENT ==================== */
+        .invest-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .invest-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .invest-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(201, 169, 98, 0.12);
+        }
+
+        .invest-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--accent-gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .invest-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .invest-detail {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ==================== CONTACT ==================== */
+        .contact-section {
+            padding: clamp(4rem, 8vw, 6rem) 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .contact-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(201, 169, 98, 0.12);
+        }
+
+        .contact-card svg {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .contact-card a:hover { color: var(--accent-gold); }
+
+        .contact-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-right a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-right a:hover { color: var(--accent-gold); }
+
+        .powered-by {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 1rem 0;
+            opacity: 0.6;
+        }
+
+        .powered-by a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: none; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes waveBar {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: none;
+        }
+
+        .reveal-stagger .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal-stagger .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal-stagger .reveal:nth-child(3) { transition-delay: 0.15s; }
+        .reveal-stagger .reveal:nth-child(4) { transition-delay: 0.2s; }
+        .reveal-stagger .reveal:nth-child(5) { transition-delay: 0.25s; }
+        .reveal-stagger .reveal:nth-child(6) { transition-delay: 0.3s; }
+
+        /* ==================== CALL BUTTON (HERO) ==================== */
+        .call-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--accent-gold);
+            color: #0a0908;
+            padding: 1rem 2.5rem;
+            border-radius: var(--radius-pill);
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 24px rgba(201, 169, 98, 0.3);
+            position: relative;
+            font-family: inherit;
+        }
+
+        .call-btn::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: var(--radius-pill);
+            border: 2px solid var(--accent-gold);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        .call-btn:hover {
+            background: var(--accent-gold-bright);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(201, 169, 98, 0.45);
+        }
+
+        .call-btn.active {
+            background: #ef4444;
+            box-shadow: 0 4px 24px rgba(239, 68, 68, 0.3);
+        }
+
+        .call-btn.active::before {
+            border-color: #ef4444;
+        }
+
+        /* Call status indicator */
+        .call-status {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(10, 9, 8, 0.9);
+            border: 1px solid rgba(201, 169, 98, 0.2);
+            border-radius: var(--radius-pill);
+            z-index: 99;
+            backdrop-filter: blur(12px);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .call-status.visible { display: flex; }
+
+        .call-status .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+
+            .hero { min-height: auto; padding: 7rem 0 3rem; }
+            .hero h1 { font-size: 2.2rem; }
+
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+            .stat-item:nth-child(2)::after { display: none; }
+
+            .steps-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .invest-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+            .contact-grid { grid-template-columns: 1fr; }
+
+            .hero-actions { flex-direction: column; align-items: center; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-item::after { display: none; }
+
+            .cta-box { padding: 2.5rem 1.5rem; }
+        }
+
+        /* ==================== VAPI BUTTON OVERRIDES ==================== */
+        .vapi-btn {
+            font-family: 'Montserrat', sans-serif !important;
+            border-radius: var(--radius-pill) !important;
+        }
+        .vapi-btn-is-idle {
+            background: var(--accent-gold) !important;
+            box-shadow: 0 4px 24px rgba(201, 169, 98, 0.35) !important;
+        }
+        .vapi-btn-is-active {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4) !important;
+        }
+        .vapi-btn-is-speaking {
+            box-shadow: 0 0 30px rgba(201, 169, 98, 0.5) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="https://tuluminatirealestate.com" class="logo">Tuluminati</a>
+            <ul class="nav-links">
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#investment">Investment</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="nav-cta vapi-trigger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Talk to Luna
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Call Status -->
+    <div class="call-status" id="callStatus">
+        <div class="dot"></div>
+        <span>Speaking with Luna...</span>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <div class="pulse-dot"></div>
+                    AI Voice Concierge
+                </div>
+                <h1>Meet <em>Luna</em> — Your Riviera Maya Real Estate Guide</h1>
+                <p class="hero-sub">24/7 bilingual voice assistant for luxury properties in Tulum, Playa del Carmen & the Riviera Maya. Ask about properties, investment returns, or schedule a tour.</p>
+                <div class="hero-actions">
+                    <button class="call-btn vapi-trigger" id="heroCallBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Talk to Luna
+                    </button>
+                    <a href="https://tuluminatirealestate.com" class="btn-secondary" target="_blank">
+                        Browse Properties
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar reveal">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">100<span>+</span></div>
+                    <div class="stat-label">Properties Managed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8-15<span>%</span></div>
+                    <div class="stat-label">Annual ROI</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24<span>/7</span></div>
+                    <div class="stat-label">Availability</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Languages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">How It Works</div>
+                <h2 class="section-title">Three steps to your <em>dream property</em></h2>
+                <p class="section-subtitle">Luna guides you from initial inquiry to scheduling an in-person or virtual tour.</p>
+            </div>
+            <div class="steps-grid reveal-stagger">
+                <div class="step-card reveal">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <h3>Tell Luna What You Want</h3>
+                    <p>Click "Talk to Luna" and describe what you're looking for — a beachfront condo, investment property, or vacation rental.</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <h3>Get Personalized Guidance</h3>
+                    <p>Luna will ask about your budget, timeline, and preferred location to match you with the right properties and investment data.</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3>Schedule Your Tour</h3>
+                    <p>Book a virtual walkthrough or in-person property tour. Luna connects you directly with a Tuluminati specialist.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">What Luna Knows</div>
+                <h2 class="section-title">Your AI-powered <em>property expert</em></h2>
+            </div>
+            <div class="features-grid reveal-stagger">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <h3>Property Search</h3>
+                    <p>Condos, villas, beachfront lots, and pre-construction deals across Tulum, Playa del Carmen, Cancun, and more.</p>
+                    <div class="feature-detail">Starting from $78,000 USD</div>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3>Investment Analysis</h3>
+                    <p>Data-driven ROI insights from 100+ managed vacation rentals. Luna knows which areas and property types actually perform.</p>
+                    <div class="feature-detail">8-15% annual ROI</div>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <h3>Vacation Rentals</h3>
+                    <p>Browse rental properties for your next Riviera Maya getaway, from jungle retreats to oceanfront penthouses.</p>
+                    <div class="feature-detail">$120-$800/night</div>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
+                    <h3>Buyer's Guide & Legal</h3>
+                    <p>Fideicomiso setup, developer financing, due diligence, and contract review — Luna explains the entire foreign buyer process.</p>
+                    <div class="feature-detail">Full legal support included</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box reveal">
+                <div class="voice-waves">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <h2>Ready to find your <em>paradise</em>?</h2>
+                <p>Luna speaks English, Spanish, and French. Ask anything about Riviera Maya real estate — she's available 24/7.</p>
+                <div class="cta-actions">
+                    <button class="btn-primary vapi-trigger">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                        Talk to Luna Now
+                    </button>
+                    <a href="https://wa.me/529983702679" class="btn-secondary" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        WhatsApp Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Data -->
+    <section id="investment" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">Investment Data</div>
+                <h2 class="section-title">Why the Riviera Maya is <em>booming</em></h2>
+                <p class="section-subtitle">Real numbers from the fastest-growing real estate market in Latin America.</p>
+            </div>
+            <div class="invest-grid reveal-stagger">
+                <div class="invest-card reveal">
+                    <div class="invest-value">8-20%</div>
+                    <div class="invest-label">Annual Rental Yield</div>
+                    <div class="invest-detail">Vacation rentals in Tulum and Playa del Carmen consistently outperform traditional markets.</div>
+                </div>
+                <div class="invest-card reveal">
+                    <div class="invest-value">17M+</div>
+                    <div class="invest-label">Annual Tourists</div>
+                    <div class="invest-detail">The Riviera Maya draws over 17 million visitors per year, fueling rental demand year-round.</div>
+                </div>
+                <div class="invest-card reveal">
+                    <div class="invest-value">40%</div>
+                    <div class="invest-label">5-Year Growth</div>
+                    <div class="invest-detail">Property values in key Tulum zones have appreciated 40% over the past five years.</div>
+                </div>
+                <div class="invest-card reveal">
+                    <div class="invest-value">0.1%</div>
+                    <div class="invest-label">Property Tax</div>
+                    <div class="invest-detail">Mexico offers one of the lowest property tax rates in the world — just 0.1% of assessed value.</div>
+                </div>
+                <div class="invest-card reveal">
+                    <div class="invest-value">30-50%</div>
+                    <div class="invest-label">Pre-Construction Savings</div>
+                    <div class="invest-detail">Buy during pre-construction phases and lock in prices well below market value at delivery.</div>
+                </div>
+                <div class="invest-card reveal">
+                    <div class="invest-value">$78K</div>
+                    <div class="invest-label">Entry Point</div>
+                    <div class="invest-detail">Residential lots start as low as $78,000 USD — accessible entry into the Riviera Maya market.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">Get In Touch</div>
+                <h2 class="section-title">Reach <em>Tuluminati</em></h2>
+            </div>
+            <div class="contact-grid reveal-stagger">
+                <div class="contact-card reveal">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <h3>Phone</h3>
+                    <a href="tel:+529983702679">+52 998 370 2679</a>
+                </div>
+                <div class="contact-card reveal">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <h3>Email</h3>
+                    <a href="mailto:info@tuluminatirealestate.com">info@tuluminatirealestate.com</a>
+                </div>
+                <div class="contact-card reveal">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <h3>Location</h3>
+                    <p>Aldea Zama, Tulum, Q.R., Mexico</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div>&copy; 2026 Tuluminati Real Estate</div>
+            <div class="footer-right">
+                <a href="https://tuluminatirealestate.com" target="_blank">Main Site</a>
+                <a href="https://wa.me/529983702679" target="_blank">WhatsApp</a>
+            </div>
+        </div>
+    </footer>
+    <div class="powered-by">Voice AI powered by <a href="https://vapi.ai" target="_blank">VAPI</a> &middot; Built by <a href="https://purplesquirrelmedia.io" target="_blank">Purple Squirrel Media</a></div>
+
+    <!-- VAPI SDK Integration -->
+    <script>
+        // ==================== VAPI WIDGET ====================
+        var buttonConfig = {
+            position: "bottom-right",
+            offset: "40px",
+            width: "60px",
+            height: "60px",
+            idle: {
+                color: "rgb(201, 169, 98)",
+                type: "pill",
+                title: "Talk to Luna",
+                subtitle: "AI Real Estate Concierge",
+                icon: "https://unpkg.com/lucide-static@0.321.0/icons/phone.svg",
+            },
+            loading: {
+                color: "rgb(168, 139, 74)",
+                type: "pill",
+                title: "Connecting...",
+                subtitle: "Please wait",
+                icon: "https://unpkg.com/lucide-static@0.321.0/icons/loader-2.svg",
+            },
+            active: {
+                color: "rgb(239, 68, 68)",
+                type: "pill",
+                title: "Luna is listening...",
+                subtitle: "Tap to end call",
+                icon: "https://unpkg.com/lucide-static@0.321.0/icons/phone-off.svg",
+            },
+        };
+
+        (function (d, t) {
+            var g = document.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+            g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+            g.defer = true;
+            g.async = true;
+            s.parentNode.insertBefore(g, s);
+
+            g.onload = function () {
+                window.vapiInstance = window.vapiSDK.run({
+                    apiKey: "YOUR_VAPI_PUBLIC_KEY",       // <- Replace with your VAPI public key
+                    assistant: "YOUR_ASSISTANT_ID",        // <- Replace with Luna's assistant ID
+                    config: buttonConfig,
+                });
+            };
+        })(document, "script");
+
+        // ==================== CUSTOM CALL TRIGGERS ====================
+        // Wire up all .vapi-trigger buttons to click the VAPI floating button
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.vapi-trigger').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var vapiBtn = document.querySelector('.vapi-btn');
+                    if (vapiBtn) {
+                        vapiBtn.click();
+                    }
+                });
+            });
+        });
+
+        // ==================== SCROLL REVEALS ====================
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.classList.contains('reveal-stagger')) {
+                        entry.target.querySelectorAll('.reveal').forEach(function(child) {
+                            child.classList.add('active');
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
+            observer.observe(el);
+        });
+
+        // ==================== SMOOTH SCROLL ====================
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                var target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

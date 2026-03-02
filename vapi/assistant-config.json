@@ -1,0 +1,26 @@
+{
+  "name": "Luna - Tuluminati Concierge",
+  "firstMessage": "Hi! Thanks for calling Tuluminati Real Estate. I'm Luna, your AI concierge for luxury properties in the Riviera Maya. Are you looking to buy, rent, or invest?",
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "temperature": 0.7,
+    "maxTokens": 300
+  },
+  "voice": {
+    "provider": "11labs",
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "stability": 0.6,
+    "similarityBoost": 0.8
+  },
+  "transcriber": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "multi"
+  },
+  "endCallMessage": "Thank you for your interest in Tuluminati Real Estate! We'll be in touch very soon. Have a wonderful day!",
+  "silenceTimeoutSeconds": 30,
+  "maxDurationSeconds": 600,
+  "backgroundSound": "off",
+  "recordingEnabled": true
+}
