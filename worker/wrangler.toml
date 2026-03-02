@@ -5,9 +5,14 @@ compatibility_date = "2024-12-01"
 [vars]
 TULUMINATI_PHONE = "+529983702679"
 NOTIFICATION_EMAIL = "info@tuluminatirealestate.com"
+NTFY_TOPIC = "tuluminati-leads-9k3x"
+DASHBOARD_PASSWORD = "luna2026"
 
-# Uncomment and set these after creating a Twilio account:
-# [vars]
+[[kv_namespaces]]
+binding = "LEADS"
+id = "8a57d54d329944b68dd7b56a09cbc0fb"
+
+# Optional: Uncomment after creating a Twilio account for WhatsApp:
 # TWILIO_ACCOUNT_SID = ""
 # TWILIO_AUTH_TOKEN = ""
 # TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"
