@@ -758,9 +758,9 @@ function extractLeadFromReport(report) {
     summary,
     transcript: typeof transcript === "string" ? transcript : formatTranscript(transcript),
     recordingUrl,
-    callerName: extractField(transcript, ["my name is", "i'm", "this is", "i am"]),
+    callerName: extractCallerName(transcript),
     intent: extractIntent(transcript),
-    budget: extractField(transcript, ["budget", "price range", "looking to spend", "around"]),
+    budget: extractBudget(transcript),
     location: extractLocation(transcript),
     contactInfo,
   };
@@ -775,11 +775,32 @@ function formatTranscript(transcript) {
   return String(transcript);
 }
 
-function extractField(transcript, keywords) {
-  const text = typeof transcript === "string"
-    ? transcript.toLowerCase()
-    : formatTranscript(transcript).toLowerCase();
+function extractCallerName(transcript) {
+  // Only search caller/user lines, not AI lines (avoids "I'm Luna")
+  const text = typeof transcript === "string" ? transcript : formatTranscript(transcript);
+  const callerLines = text.split("\n")
+    .filter(l => /^(User|Caller):/i.test(l))
+    .join(" ")
+    .toLowerCase();
 
+  if (!callerLines) return extractFieldFromText(text.toLowerCase(), ["my name is", "me llamo", "soy"]);
+
+  const keywords = ["my name is", "i'm", "i am", "this is", "me llamo", "mi nombre es", "soy"];
+  for (const kw of keywords) {
+    const idx = callerLines.indexOf(kw);
+    if (idx !== -1) {
+      const after = callerLines.substring(idx + kw.length, idx + kw.length + 60);
+      const cleaned = after.replace(/^[\s,.:]+/, "").split(/[.,!?\n]/)[0].trim();
+      // Filter out common false positives
+      if (cleaned.length > 1 && cleaned.length < 50 && !["interested", "looking", "calling", "here"].includes(cleaned.split(" ")[0])) {
+        return cleaned;
+      }
+    }
+  }
+  return null;
+}
+
+function extractFieldFromText(text, keywords) {
   for (const keyword of keywords) {
     const idx = text.indexOf(keyword);
     if (idx !== -1) {
@@ -791,14 +812,53 @@ function extractField(transcript, keywords) {
   return null;
 }
 
+function extractBudget(transcript) {
+  const text = typeof transcript === "string"
+    ? transcript.toLowerCase()
+    : formatTranscript(transcript).toLowerCase();
+
+  // Match explicit dollar amounts: $100,000 / $100k / 100,000 USD / 100k dollars
+  const dollarPatterns = [
+    /\$[\d,]+(?:\.\d+)?(?:\s*(?:k|m|thousand|million|mil|millon))?/i,
+    /[\d,]+(?:\.\d+)?\s*(?:dollars?|usd|d[oó]lares?)/i,
+    /[\d,]+(?:\.\d+)?\s*(?:k|m|thousand|million|mil|millon(?:es)?)\s*(?:dollars?|usd|d[oó]lares?)?/i,
+  ];
+
+  for (const pattern of dollarPatterns) {
+    const match = text.match(pattern);
+    if (match) return match[0].trim();
+  }
+
+  // Match budget context keywords (EN + ES)
+  const keywords = ["budget", "price range", "looking to spend", "presupuesto", "invertir", "quiero invertir", "gastar"];
+  for (const kw of keywords) {
+    const idx = text.indexOf(kw);
+    if (idx !== -1) {
+      const after = text.substring(idx, idx + 80);
+      // Look for a number in the surrounding text
+      const numMatch = after.match(/[\d,]+(?:\.\d+)?(?:\s*(?:k|m|thousand|million|mil|millon(?:es)?))?/);
+      if (numMatch && numMatch[0].length > 2) {
+        return numMatch[0].trim();
+      }
+      // Spanish written numbers
+      if (after.includes("cien mil")) return "100,000";
+      if (after.includes("doscientos mil")) return "200,000";
+      if (after.includes("medio mill")) return "500,000";
+      if (after.includes("un mill")) return "1,000,000";
+    }
+  }
+
+  return null;
+}
+
 function extractIntent(transcript) {
   const text = typeof transcript === "string"
     ? transcript.toLowerCase()
     : formatTranscript(transcript).toLowerCase();
 
   if (text.includes("buy") || text.includes("purchase") || text.includes("comprar")) return "Buying";
-  if (text.includes("invest") || text.includes("roi") || text.includes("return")) return "Investment";
-  if (text.includes("rent") || text.includes("vacation") || text.includes("alquil")) return "Vacation Rental";
+  if (text.includes("invest") || text.includes("invertir") || text.includes("roi") || text.includes("return")) return "Investment";
+  if (text.includes("rent") || text.includes("vacation") || text.includes("alquil") || text.includes("rentar")) return "Vacation Rental";
   if (text.includes("sell") || text.includes("vender")) return "Selling";
   return "General Inquiry";
 }
@@ -821,12 +881,113 @@ function extractLocation(transcript) {
 
 function extractContact(transcript) {
   const text = typeof transcript === "string" ? transcript : formatTranscript(transcript);
-  const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w+/i);
-  const phoneMatch = text.match(/[+]?[\d\s\-().]{7,15}/);
   const contacts = {};
+
+  // Email: straightforward regex
+  const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w+/i);
   if (emailMatch) contacts.email = emailMatch[0];
-  if (phoneMatch) contacts.phone = phoneMatch[0].trim();
+
+  // Phone: look near phone-related context words to avoid grabbing dollar amounts
+  const phoneContextWords = [
+    "phone", "whatsapp", "call me", "number is", "reach me", "contact",
+    "teléfono", "número", "celular", "llam", "mi whatsapp", "móvil",
+  ];
+  const textLower = text.toLowerCase();
+
+  // Strategy 1: Find phone numbers near context words
+  for (const ctx of phoneContextWords) {
+    const idx = textLower.indexOf(ctx);
+    if (idx === -1) continue;
+    // Search in a 150-char window after the context word
+    const window = text.substring(idx, idx + 150);
+    // Match phone-like patterns: +52 984 210 5952, (269) 218-9965, etc.
+    const phoneMatch = window.match(/[+]?\d[\d\s\-().]{8,18}\d/);
+    if (phoneMatch) {
+      const digits = phoneMatch[0].replace(/[^\d]/g, "");
+      if (digits.length >= 7 && digits.length <= 15) {
+        contacts.phone = phoneMatch[0].trim();
+        return Object.keys(contacts).length > 0 ? contacts : null;
+      }
+    }
+  }
+
+  // Strategy 2: Look for spoken-out phone digits in caller lines
+  // e.g., "más cincuenta y dos nueve ocho cuatro..."
+  const spokenDigits = extractSpokenPhoneNumber(textLower);
+  if (spokenDigits) {
+    contacts.phone = spokenDigits;
+    return Object.keys(contacts).length > 0 ? contacts : null;
+  }
+
+  // Strategy 3: Fallback — find any 10+ digit sequence NOT preceded by $ or "dollar"
+  const allPhones = [...text.matchAll(/(?<!\$)(?<!\d)[+]?\d[\d\s\-().]{8,18}\d/g)];
+  for (const match of allPhones) {
+    const before = text.substring(Math.max(0, match.index - 10), match.index).toLowerCase();
+    if (before.includes("$") || before.includes("dollar") || before.includes("usd") || before.includes("price")) continue;
+    const digits = match[0].replace(/[^\d]/g, "");
+    if (digits.length >= 10 && digits.length <= 15) {
+      contacts.phone = match[0].trim();
+      break;
+    }
+  }
+
   return Object.keys(contacts).length > 0 ? contacts : null;
+}
+
+function extractSpokenPhoneNumber(text) {
+  // Map Spanish spoken numbers to digits
+  const wordToDigit = {
+    "cero": "0", "uno": "1", "una": "1", "dos": "2", "tres": "3", "cuatro": "4",
+    "cinco": "5", "seis": "6", "siete": "7", "ocho": "8", "nueve": "9",
+  };
+  const compoundNumbers = {
+    "diez": "10", "once": "11", "doce": "12", "trece": "13", "catorce": "14",
+    "quince": "15", "dieciséis": "16", "dieciseis": "16", "diecisiete": "17",
+    "dieciocho": "18", "diecinueve": "19", "veinte": "20",
+    "veintiuno": "21", "veintidós": "22", "veintidos": "22", "veintitrés": "23", "veintitres": "23",
+    "veinticuatro": "24", "veinticinco": "25", "veintiséis": "26", "veintiseis": "26",
+    "veintisiete": "27", "veintiocho": "28", "veintinueve": "29",
+    "treinta": "30", "cuarenta": "40", "cincuenta": "50", "sesenta": "60",
+    "setenta": "70", "ochenta": "80", "noventa": "90",
+  };
+
+  // Look for sequences near phone context
+  const phoneContextIdx = text.search(/(?:whatsapp|número|teléfono|celular|phone|number)/);
+  if (phoneContextIdx === -1) return null;
+
+  const window = text.substring(phoneContextIdx, phoneContextIdx + 300);
+  const words = window.split(/[\s,]+/);
+  let digits = "";
+  let collecting = false;
+
+  for (const word of words) {
+    const clean = word.replace(/[^a-záéíóúñü0-9]/g, "");
+    if (/^\d+$/.test(clean) && clean.length <= 4) {
+      digits += clean;
+      collecting = true;
+    } else if (wordToDigit[clean]) {
+      digits += wordToDigit[clean];
+      collecting = true;
+    } else if (compoundNumbers[clean]) {
+      digits += compoundNumbers[clean];
+      collecting = true;
+    } else if (clean === "más" || clean === "mas" || clean === "plus") {
+      digits += "+";
+      collecting = true;
+    } else if (clean === "y" && collecting) {
+      continue; // skip "y" connectors between numbers
+    } else if (collecting && digits.replace(/\+/g, "").length >= 7) {
+      break; // stop collecting when we have enough digits
+    } else if (collecting) {
+      break;
+    }
+  }
+
+  const rawDigits = digits.replace(/\+/g, "");
+  if (rawDigits.length >= 10 && rawDigits.length <= 15) {
+    return digits.startsWith("+") ? digits : digits;
+  }
+  return null;
 }
 
 // ─── Notifications ─────────────────────────────────────────────────
