@@ -45,3 +45,5 @@
 2026-03-02 | 2adcc05f (PREA dangerous success) | Optimizing wrong metric in RE, leading indicators, market fundamentals
 2026-03-02 | 993e01e0 (agent as scheduler) | Multi-capability RE agent, different cadences, dynamic pricing
 2026-03-02 | 920b38f0 (cybercentry quantum) | Post-quantum security for fideicomiso trusts, Tulum Node infrastructure
+2026-03-02 | (cybercentry private data) | RE data security, private verification, partnership CTA
+2026-03-02 | (agent pricing agentfinance) | Outcome-based vs per-call pricing, RE commission model
