@@ -163,7 +163,21 @@ export default {
     // ── Main VAPI Webhook ──
     if (url.pathname === "/webhook" && request.method === "POST") {
       try {
-        const payload = await request.json();
+        let payload;
+        try {
+          payload = await request.json();
+        } catch {
+          return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (!payload || typeof payload !== 'object') {
+          return new Response(JSON.stringify({ error: "Invalid payload" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
         const { message } = payload;
 
         // Tool calls from Luna mid-conversation
@@ -255,7 +269,8 @@ export default {
         });
       } catch (err) {
         console.error("Webhook error:", err);
-        return new Response(JSON.stringify({ error: err.message }), {
+        // Don't leak internal error details
+        return new Response(JSON.stringify({ error: "Internal webhook error" }), {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
